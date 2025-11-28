@@ -4,15 +4,7 @@ import { Ionicons } from "@expo/vector-icons";
 import { useEffect, useState } from "react";
 import { View, Text, Pressable, Button, Modal, FlatList, ActivityIndicator } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import {
-  Table,
-  TableBody,
-  TableHeader,
-  TableRow,
-  TableHead,
-  TableData,
-  TableFooter,
-} from '@/components/ui/table';
+;
 import { useOrderStore } from "../store/orderStore";
 import { Order } from "../types/Order";
 

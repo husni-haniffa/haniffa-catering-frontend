@@ -5,6 +5,7 @@ import { TextInput, View, Text, Pressable, FlatList, ActivityIndicator } from "r
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useCartStore } from "../store/cartStore";
 import { useOrderStore } from "../store/orderStore";
+import { useToastStore } from "../store/toastStore";
 
 export default function Cart () {
 
@@ -13,8 +14,10 @@ export default function Cart () {
     const {order, placeOrder, customerName, customerPhoneNumber, 
         updateCustomerName, updateCustomerPhoneNumber, advance, updateAdvancePaid, placingOrder} = useOrderStore()
     const balance = useOrderStore((state) => state.getBalance(totalAmount, advance))
+    const toast = useToastStore.getState().toast;
     const handlePlaceOrder = () => {
-        const order = {
+        try {
+            const order = {
             customerName: customerName,
             customerPhoneNumber: customerPhoneNumber,
             items: cart,
@@ -23,16 +26,22 @@ export default function Cart () {
             balance: balance
         }
         placeOrder(order)
-      
+        toast("success", "Success!", "Placed Order");
             clearCart()
             updateCustomerName("")
     updateCustomerPhoneNumber(0)  // or ""
     updateAdvancePaid(0, [])
+        } catch (error) {
+            toast("error", "Error!", "Failed to Place Order");
+            console.log(error)
+        }
+        
     
         
     }
     return (
         <SafeAreaView>
+           
             <Card size="lg" className="flex-col gap-3">
                  <View className="flex-col gap-2">
                     <Text>Name</Text>
