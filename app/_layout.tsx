@@ -3,12 +3,15 @@ import { Stack } from "expo-router";
 import './global.css'
 import { StatusBar } from "react-native";
 import { OverlayProvider } from "@gluestack-ui/core/overlay/creator";
+import Toast from "@/components/ui/toast";
+
 
 export default function RootLayout() {
   return (
     <GluestackUIProvider>
       <OverlayProvider>
           <StatusBar barStyle={"dark-content"}/>
+          <Toast/>
           <Stack>
             <Stack.Screen name="(tabs)" options={{headerShown: false}}/>
             <Stack.Screen name="pages/items" options={{title: 'Items'}}/>
