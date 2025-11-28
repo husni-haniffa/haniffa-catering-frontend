@@ -39,6 +39,14 @@
             "backgroundColor": "#000000"
           }
         }
+      ],
+      [
+        "expo-font",
+        {
+          "fonts": [
+            "node_modules/@expo-google-fonts/poppins/900Black/Poppins_900Black.ttf"
+          ]
+        }
       ]
     ],
     "experiments": {
