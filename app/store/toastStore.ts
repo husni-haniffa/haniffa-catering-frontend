@@ -1,6 +1,6 @@
 import { create } from "zustand"
 
-type Toast = "success" | "error"
+type Toast = "success" | "error" | "info"
 
 interface State {
     visible: boolean
@@ -28,7 +28,7 @@ export const useToastStore = create<State & Action>((set) => ({
         })
         setTimeout(() => {
             set({visible: false})
-        }, 2000);
+        }, 500);
     },
   
 }))
