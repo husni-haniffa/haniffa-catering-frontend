@@ -3,14 +3,25 @@ import { Ionicons } from "@expo/vector-icons";
 
 export default function TabsLayout () {
     return (
-        <Tabs>
+        <Tabs 
+        screenOptions={
+            {
+            tabBarActiveTintColor: "green", 
+            tabBarInactiveTintColor: "black",
+            tabBarLabelStyle: {fontSize: 12, fontWeight: "bold"},
+            tabBarStyle: {height: 75}
+            }
+        }>
             <Tabs.Screen
                 name="index"
                 options={
                     {   
                         title: "Home",
-                        tabBarIcon: () => (
-                            <Ionicons name="home" size={25}/>
+                        headerTitleStyle: {
+                            fontWeight: "bold"
+                        },
+                        tabBarIcon: ({color}) => (
+                            <Ionicons name="home-sharp" size={20} color={color}/>
                         )
                     }
                 }
@@ -20,8 +31,11 @@ export default function TabsLayout () {
                 options={
                     {
                         title: "Orders",
-                        tabBarIcon: () => (
-                            <Ionicons name="cafe" size={25}/>
+                        headerTitleStyle: {
+                            fontWeight: "bold"
+                        },
+                        tabBarIcon: ({color}) => (
+                            <Ionicons name="restaurant-sharp" size={20} color={color}/>
                         )
                     }
                 }
@@ -31,8 +45,11 @@ export default function TabsLayout () {
                 options={
                     {
                         title: "Payments",
-                        tabBarIcon: () => (
-                            <Ionicons name="cash-outline" size={25}/>
+                        headerTitleStyle: {
+                            fontWeight: "bold"
+                        },
+                        tabBarIcon: ({color}) => (
+                            <Ionicons name="cash-sharp" size={20} color={color}/>
                         )
                     }
                 }
