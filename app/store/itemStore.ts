@@ -13,7 +13,9 @@ interface Action {
 
 export const useItemStore = create<State & Action>((set) => ({
     items: [],
+
     itemsLoading: false,
+
     getItems: async () => {
         set({itemsLoading: true})
         const data = await fetchItems()
@@ -21,4 +23,5 @@ export const useItemStore = create<State & Action>((set) => ({
         set({items: data})
         return data
     }
+    
 }))

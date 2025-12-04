@@ -5,41 +5,62 @@ import { View, Text, Pressable, Modal, TextInput, FlatList, ActivityIndicator} f
 import { usePaymentStore } from "../store/paymentStore";
 import { Button, ButtonText, ButtonSpinner } from "@/components/ui/button";
 import { useToastStore } from "../store/toastStore";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { Controller, useForm } from "react-hook-form";
+import { updatePaymentSchema, UpdatePaymentSchema } from "../types/Payment";
 
 export default function Payments () {
-    const [showPaymentDetails, setPaymentDetails] = useState(false)
-    const [selectedPaymentId, setSelectedPaymentId] = useState<String>('')
-    const { payments, paymentsLoading, payingAmount, 
-            paymentProcessing, updatePayingAmount, updatePayment, 
-            getPayments } = usePaymentStore()
 
     const {toast} = useToastStore()
 
-    useEffect(() => {
-            getPayments()
-        }, [])
+    const [ showPaymentDetails, setPaymentDetails ] = useState(false)
 
-    const selectedPayment = payments.find(p => p.id === selectedPaymentId);
+    const { payments, paymentsLoading, paymentUpdating, 
+            updatePayment, getPayments } = usePaymentStore()
+    
+    useEffect(() => {
+        getPayments()
+    }, [])
+            
+    const [selectedPaymentId, setSelectedPaymentId] = useState<string>('')
+
+    let selectedPayment = payments.find(p => p.id === selectedPaymentId);
+    
+    const { control, handleSubmit, formState: { errors }, reset } = useForm<UpdatePaymentSchema>({
+            resolver: zodResolver(updatePaymentSchema),
+                defaultValues: {
+                    amountPaying: '',
+                    amountToPay: 0
+                }
+            })
+        
+    useEffect(() => {
+        if (selectedPayment) {
+                reset({
+                    amountPaying: '',
+                    amountToPay: selectedPayment.amountToPay
+                })
+            }
+        }, [selectedPayment, reset]
+    )
 
 
     const openPayment = (id: string) => {
-            setSelectedPaymentId(id)
-            setPaymentDetails(true)
-        }
+        setSelectedPaymentId(id)
+        setPaymentDetails(true)
+    }
 
-    const handleUpdatePayment = async (id: string, amount: number) => {
+    const onSubmit = async(data: UpdatePaymentSchema) => {
         try {   
-                    
-                await updatePayment(id, amount)
-                toast('success', 'Success', 'Payment Updated')
-                updatePayingAmount(0)
-                getPayments()
-                setPaymentDetails(false)
+            updatePayment(selectedPaymentId, Number(data.amountPaying))
+            getPayments()
+            toast('success', 'Success', 'Payment Updated')
+            reset({ amountPaying: '',})
+            setPaymentDetails(false)
         } catch (error) {
             console.log(error)
             toast('success', 'Success', 'Fail to Update Payment')
         }
-        
     }
 
     return (
@@ -86,23 +107,31 @@ export default function Payments () {
                                     <Text >Paid So far</Text>
                                     <Text>{selectedPayment.paid}</Text>
                                 </View>
-                                <View className="flex-row justify-between items-center">
-                                    <Text  >Paying</Text>
-                                    <TextInput placeholder="0.00"  className="border border-gray-100 rounded-xl w-20"  keyboardType="number-pad"
-                                        value={payingAmount.toString()} 
-                                        onChangeText={(value) => {
-                                            const payingAmount = Number(value)
-                                            updatePayingAmount(payingAmount)
-                                        }}
-                                    />
+                                <View className="flex-col gap-1">
+                                    <View className="flex-row justify-between items-center">
+                                        <Text  >Paying Now</Text>
+                                        <Controller
+                                        control={control}
+                                        name="amountPaying"
+                                        render={({field: {onChange, onBlur, value}}) => (
+                                            <TextInput placeholder="Enter Amount" className="border border-gray-100 rounded-xl bg-white" 
+                                                onChangeText={onChange} 
+                                                value={value}
+                                                onBlur={onBlur}
+                                                keyboardType="number-pad"
+                                            />
+                                        )}
+                                        />           
+                                    </View>
+                                   {errors.amountPaying && <Text className="text-red-500">{errors.amountPaying.message}</Text>}
                                 </View>
                                 <View className="flex-row justify-between items-center border-t-2 border-b-2 border-gray-200 mt-3">
                                     <Text  className="font-semibold mt-3 mb-3">Balance</Text>
                                     <Text className="font-semibold mt-3 mb-3">{selectedPayment.balance}</Text>
                                 </View>
                                 <View className="flex-col gap-3 mt-5">
-                                <Button onPress={() => handleUpdatePayment(selectedPayment.id, payingAmount)} action="positive" className="rounded-xl" size="lg">
-                                        {paymentProcessing ? <ButtonSpinner color="white" /> : 
+                                    <Button onPress={handleSubmit(onSubmit) } action="positive" className="rounded-xl" size="lg">
+                                        {paymentUpdating ? <ButtonSpinner color="white" /> : 
                                         <ButtonText className="font-medium text-sm ml-2">
                                             Update Payment
                                         </ButtonText> }

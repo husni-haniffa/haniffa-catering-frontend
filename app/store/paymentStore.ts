@@ -1,58 +1,53 @@
 import { create } from "zustand";
 import { Payment } from "../types/Payment";
-import { createPayment, getPayments, IPayment, updatePayment } from "../api/payment";
+import { createPayment, getPayments, updatePayment } from "../api/payment";
 
 interface State {
     payments: Payment[]
     paymentsLoading: boolean
-    customerPhoneNumber: number
-    amountToPay: number
-    paymentProcessing: boolean
-    creatingPayment: boolean
-    payingAmount: number
+    payentCreationLoading: boolean
+    paymentUpdating: boolean
 }
 
 interface Action {
     getPayments: () => Promise<Payment[]>
-    createPayment: (payment: IPayment) => Promise<Payment>
-    updateCustomerPhoneNumber: (phoneNumber: State['customerPhoneNumber']) => void
-    updateAmountToPay: (amountToPay: State['amountToPay']) => void
+    createPayment: (payment: any) => Promise<Payment>
     updatePayment: (id: string, amount: number) => Promise<Payment>
-    updatePayingAmount: (payingAmount: State['payingAmount']) => void
 }
 
-export const usePaymentStore = create<State & Action>((set) => ({
+export const usePaymentStore = create<State & Action>((set, get) => ({
     payments: [],
+
     paymentsLoading: false,
-    customerPhoneNumber: 0,
-    amountToPay: 0,
-    paymentProcessing: false,
-    creatingPayment: false,
-    payingAmount: 0,
+
+    paymentUpdating: false,
+
+    payentCreationLoading: false,
+
     getPayments: async () => {
         set({paymentsLoading: true })
         const data = await getPayments()
         set({payments: data, paymentsLoading: false})
         return data
     },
+    
     createPayment: async (payment) => {
-        set({ creatingPayment: true })
+        set({ payentCreationLoading: true })
         const data = await createPayment(payment)
-        set({  creatingPayment: false })
+        set({ payentCreationLoading: false })
         return data
     },
-    updateCustomerPhoneNumber: (customerPhoneNumber) => set(() => ({ customerPhoneNumber: customerPhoneNumber })),
-    updateAmountToPay: (amountToPay) => set(() => ({ amountToPay: amountToPay })),
+ 
     updatePayment: async(id, amount) => {
-        set({ paymentProcessing: true })
+        set({ paymentUpdating: true })
         const data = await updatePayment(id, amount)
         set((state) => ({
             payments: state.payments.map(
                 p => p.id === id ? {...p, paid: p.paid + amount, balance: p.balance - amount} : p
             )
         }))
-        set({ paymentProcessing: false })
+        set({ paymentUpdating: false })
         return data
     },
-    updatePayingAmount: (payingAmount) => set(() => ({ payingAmount: payingAmount })),
+    
 }))

@@ -18,6 +18,7 @@ interface Action {
 
 export const useCartStore = create<State & Action>((set, get) => ({
     cart: [],
+
     addToCart: (item) => {
         const cart = get().cart
         const existing = cart.find((i) => i.id == item.id)
@@ -38,6 +39,7 @@ export const useCartStore = create<State & Action>((set, get) => ({
         }
 
     },
+
     increaseQty: (id) => {
         const cart = get().cart
         const updatedCart = cart.map(item =>
@@ -47,6 +49,7 @@ export const useCartStore = create<State & Action>((set, get) => ({
         )
         set({ cart: updatedCart })
     },
+
     decreaseQty: (id) => {
         const cart = get().cart
         const updatedCart = cart
@@ -59,14 +62,18 @@ export const useCartStore = create<State & Action>((set, get) => ({
 
         set({ cart: updatedCart })
     },
+
     getTotalItems: () => {
         return get().cart.reduce((sum, item) => sum + item.quantity, 0)
         
     },
+
     getTotalAmount: () =>{
         return get().cart.reduce((sum, item) => sum + item.subTotal, 0)
     },
+
     clearCart: () => {
         set({cart: []})
     }
+    
 }))

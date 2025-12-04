@@ -13,10 +13,10 @@ export default function Items () {
 
     const {items, itemsLoading, getItems} = useItemStore()
 
-    const {cart, addToCart, increaseQty, decreaseQty, getTotalItems, getTotalAmount} = useCartStore()
+    const {cart, addToCart, increaseQty, decreaseQty} = useCartStore()
 
-    const totalItems = getTotalItems()
-    const totalAmount = getTotalAmount()
+    const totalItems = useCartStore((state) => state.getTotalItems())
+    const totalAmount = useCartStore((state) => state.getTotalAmount())
 
     useEffect(() => {
       getItems()

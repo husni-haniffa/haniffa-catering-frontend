@@ -5,47 +5,61 @@ import { TextInput, View, Text, Pressable, FlatList } from "react-native";
 import { useCartStore } from "../store/cartStore";
 import { useOrderStore } from "../store/orderStore";
 import { useToastStore } from "../store/toastStore";
-import { useRouter } from "expo-router";
 import { useEffect } from "react";
+import { useForm, Controller } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { OrderSchema, orderSchema } from "../types/Order";
 
 export default function Cart () {
 
-    const router = useRouter()
+ 
+    const { toast } = useToastStore()
 
     const { cart, increaseQty, decreaseQty, 
             clearCart, getTotalAmount } = useCartStore()
 
-    const { customerName, customerPhoneNumber, advance, 
-            placingOrder, placeOrder, updateCustomerName, 
-            updateCustomerPhoneNumber, updateAdvancePaid, getOrders, getBalance } = useOrderStore()
+    const { orderCreationLoading, placeOrder, getOrders, 
+            getBalance, } = useOrderStore()
 
     const totalAmount = getTotalAmount()
-    const balance = getBalance(totalAmount, advance)
 
-    const { toast } = useToastStore()
+    const { control, handleSubmit, formState: { errors }, reset, watch} = useForm<OrderSchema>({
+        resolver: zodResolver(orderSchema),
+        defaultValues: {
+            customerName: '',
+            customerPhoneNumber: '',
+            advance:'',
+            totalAmount: totalAmount
+
+        }
+    })
+   
+    const advanceValue = watch('advance')
+    const advance = advanceValue ? Number(advanceValue) : 0
+    const balance = getBalance(totalAmount, advance)
 
     useEffect(() => {
         getOrders()
     },[placeOrder])
 
-    const handlePlaceOrder = async () => {
-        try {
+    const onSubmit = async (data: OrderSchema) => {
+         try {
             const order = {
-                customerName: customerName,
-                customerPhoneNumber: customerPhoneNumber,
+                customerName: data.customerName,
+                customerPhoneNumber: Number(data.customerPhoneNumber),
                 items: cart,
                 totalAmount: totalAmount,
-                advance: advance,
+                advance: Number(data.advance),
                 balance: balance
             }
             await placeOrder(order)
-        
+            reset({
+                customerName: '',
+                customerPhoneNumber: '',
+                advance: '',
+            })
             toast("success", "Success!", "Placed Order");
             clearCart()
-            updateCustomerName("")
-            updateCustomerPhoneNumber(0) 
-            router.push('/(tabs)') 
-            updateAdvancePaid(0, [])
             
         } catch (error) {
             toast("error", "Error!", "Failed to Place Order");
@@ -58,20 +72,34 @@ export default function Cart () {
             <View className="px-4 flex-col gap-6 mt-6 mb-6">
                 <View className="flex-col gap-2">
                     <Text className="font-semibold">Name</Text>
-                    <TextInput placeholder="Enter Customer Name" className="border border-gray-100 rounded-xl bg-white" 
-                        onChangeText={updateCustomerName} 
-                        value={customerName}
+                    <Controller
+                    control={control}
+                    name="customerName"
+                    render={({field: {onChange, onBlur, value}}) => (
+                        <TextInput placeholder="Enter Customer Name" className="border border-gray-100 rounded-xl bg-white" 
+                            onChangeText={onChange} 
+                            value={value}
+                            onBlur={onBlur}
+                        />
+                    )}
                     />
+                    {errors.customerName && <Text className="text-red-500">{errors.customerName.message}</Text>}
                 </View>
                 <View className="flex-col gap-2">
                     <Text className="font-semibold">Phone Number</Text>
-                    <TextInput placeholder="Enter Customer Phone Number" className="border border-gray-100 rounded-xl bg-white" 
-                        keyboardType="phone-pad" 
-                        onChangeText={(value) => {
-                            const number = Number(value) 
-                            updateCustomerPhoneNumber(number)
-                        }} 
-                        value={customerPhoneNumber.toString()}/>
+                    <Controller
+                    control={control}
+                    name="customerPhoneNumber"
+                    render={({field: {onChange, onBlur, value}}) => (
+                        <TextInput placeholder="Enter Phone Number" className="border border-gray-100 rounded-xl bg-white" 
+                            onChangeText={onChange} 
+                            value={value}
+                            onBlur={onBlur}
+                            keyboardType="phone-pad"
+                        />
+                    )}
+                    />
+                    {errors.customerPhoneNumber && <Text className="text-red-500">{errors.customerPhoneNumber.message}</Text>}
                 </View>
             </View>
                  
@@ -102,23 +130,30 @@ export default function Cart () {
                     <Text>Total</Text>
                     <Text>{totalAmount}</Text>
                 </View>
-                <View className="flex-row justify-between items-center mb-2">
-                    <Text>Advance</Text>
-                    <TextInput placeholder="0.00" className="border border-gray-100 rounded-xl  w-20" 
-                        keyboardType="number-pad" 
-                        value={advance.toString()} 
-                        onChangeText={(value) => {
-                            const advance = Number(value)
-                            updateAdvancePaid(advance, cart)
-                        }}
-                    />
+                <View className="flex-col gap-1">
+                    <View className="flex-row justify-between items-center mb-2">
+                        <Text>Advance</Text>
+                        <Controller
+                        control={control}
+                        name="advance"
+                        render={({field: {onChange, onBlur, value}}) => (
+                            <TextInput placeholder="0.00" className="border border-gray-100 rounded-xl bg-white w-20" 
+                                onChangeText={onChange} 
+                                value={value}
+                                onBlur={onBlur}
+                                keyboardType="number-pad"
+                            />
+                        )}
+                        />
+                    </View>
+                    {errors.advance && <Text className="text-red-500">{errors.advance.message}</Text>}
                 </View>
                 <View className="flex-row justify-between items-center border-t-2 border-green-100">
                     <Text className="font-semibold mt-3">Balance</Text>
                     <Text className="font-semibold mt-3">{balance}</Text>
                 </View>
-                <Button action="positive" onPress={handlePlaceOrder} className="mb-6 rounded-xl mt-6" size="lg">
-                    {placingOrder ? <ButtonSpinner color="white" /> : <ButtonText className="font-medium text-sm ml-2">Place Order</ButtonText>}
+                <Button action="positive" onPress={handleSubmit(onSubmit)} className="mb-6 rounded-xl mt-6" size="lg">
+                    {orderCreationLoading ? <ButtonSpinner color="white" /> : <ButtonText className="font-medium text-sm ml-2">Place Order</ButtonText>}
                 </Button>
             </Card>
         </View>

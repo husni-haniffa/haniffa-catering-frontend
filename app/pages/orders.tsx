@@ -8,8 +8,11 @@ import { Order } from "../types/Order";
 import { Button, ButtonText } from "@/components/ui/button";
 
 export default function Orders () {
+
     const [showInvoice, setShowInvoice] = useState(false)
-    const { orders, orderProcessing, getOrders } = useOrderStore()
+
+    const { orders, ordersLoading, getOrders } = useOrderStore()
+    
     const [selectedOrder, setSelectedOrder] = useState<Order>();
 
     useEffect(() => {
@@ -35,7 +38,7 @@ export default function Orders () {
                     color="gray"
                 />
             </View>
-            {orderProcessing ? (
+            {ordersLoading ? (
                 <View className="flex-1 justify-center items-center">
                     <ActivityIndicator size={"large"}/>
                 </View> ) :  
