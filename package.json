@@ -16,6 +16,7 @@
     "@expo/vector-icons": "^15.0.3",
     "@gluestack-ui/core": "^3.0.10",
     "@gluestack-ui/utils": "^3.0.11",
+    "@hookform/resolvers": "^5.2.2",
     "@legendapp/motion": "^2.4.0",
     "@react-navigation/bottom-tabs": "^7.4.0",
     "@react-navigation/elements": "^2.6.3",
@@ -38,6 +39,7 @@
     "react": "19.1.0",
     "react-aria": "^3.33.0",
     "react-dom": "19.1.0",
+    "react-hook-form": "^7.67.0",
     "react-native": "0.81.5",
     "react-native-config": "^1.6.0",
     "react-native-dotenv": "^3.4.11",
@@ -52,6 +54,7 @@
     "rn-toastify": "^1.0.12",
     "tailwind-variants": "^0.1.20",
     "tailwindcss": "^3.4.17",
+    "zod": "^4.1.13",
     "zustand": "^5.0.8"
   },
   "devDependencies": {

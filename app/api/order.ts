@@ -1,7 +1,8 @@
+import { BASE_URL } from "@env";
 import { Order } from "../types/Order";
 
 export const createOrder = async (order: Order) => {
-    const response = await fetch('http://192.168.8.105:8080/api/orders', {
+    const response = await fetch('${BASE_URL}/api/orders', {
         method: "POST",
         body: JSON.stringify(order),
         headers: {
@@ -13,7 +14,7 @@ export const createOrder = async (order: Order) => {
 }
 
 export const fetchOrders = async () => {
-    const response = await fetch(`http://192.168.8.105:8080/api/orders`);
+    const response = await fetch(`${BASE_URL}/api/orders`);
     const data = await response.json()
     console.log(data)
     return data;
