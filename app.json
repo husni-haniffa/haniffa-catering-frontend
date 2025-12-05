@@ -47,7 +47,8 @@
             "node_modules/@expo-google-fonts/poppins/900Black/Poppins_900Black.ttf"
           ]
         }
-      ]
+      ],
+      "expo-web-browser"
     ],
     "experiments": {
       "typedRoutes": true,

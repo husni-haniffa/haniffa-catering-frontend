@@ -1,7 +1,5 @@
-import { BASE_URL } from "@env";
-
 export const createPayment = async (payment: any) => {
-    const response = await fetch(`${BASE_URL}/api/payments`, {
+    const response = await fetch(`http://192.168.8.104:8080/api/payments`, {
         method: "POST",
         body: JSON.stringify(payment),
         headers: {
@@ -14,14 +12,14 @@ export const createPayment = async (payment: any) => {
 }
 
 export const getPayments = async () => {
-    const response = await fetch(`${BASE_URL}/api/payments`);
+    const response = await fetch(`http://192.168.8.104:8080/api/payments`);
     const data = await response.json()
     return data
 
 }
 
 export const updatePayment = async (id: string, amount: number) => {
-    const response = await fetch(`${BASE_URL}/api/payments/${id}`, {
+    const response = await fetch(`http://192.168.8.104:8080/api/payments/${id}`, {
         method: 'PUT',
         body: JSON.stringify(amount),
         headers: {
