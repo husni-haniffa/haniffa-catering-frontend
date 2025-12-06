@@ -1,7 +1,13 @@
 import { Tabs } from "expo-router";
 import { Ionicons } from "@expo/vector-icons";
+import { Pressable } from "react-native";
+import { useOrderStore } from "../store/orderStore";
+import { usePaymentStore } from "../store/paymentStore";
 
 export default function TabsLayout () {
+    const { getOrders } = useOrderStore()
+    const { getPayments } = usePaymentStore()
+    
     return (
         <Tabs 
         screenOptions={
@@ -36,6 +42,11 @@ export default function TabsLayout () {
                         },
                         tabBarIcon: ({color}) => (
                             <Ionicons name="restaurant-sharp" size={20} color={color}/>
+                        ),
+                        headerRight: () => (
+                            <Pressable className="mr-9" onPress={getOrders}>
+                                <Ionicons name="reload-outline" size={25} color={"black"}/>
+                            </Pressable>
                         )
                     }
                 }
@@ -50,6 +61,11 @@ export default function TabsLayout () {
                         },
                         tabBarIcon: ({color}) => (
                             <Ionicons name="cash-sharp" size={20} color={color}/>
+                        ),
+                        headerRight: () => (
+                            <Pressable className="mr-9" onPress={getPayments}>
+                                <Ionicons name="reload-outline" size={25} color={"black"}/>
+                            </Pressable>
                         )
                     }
                 }

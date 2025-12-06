@@ -12,7 +12,6 @@ import { OrderSchema, orderSchema } from "../types/Order";
 
 export default function Cart () {
 
- 
     const { toast } = useToastStore()
 
     const { cart, increaseQty, decreaseQty, 
@@ -38,10 +37,6 @@ export default function Cart () {
     const advance = advanceValue ? Number(advanceValue) : 0
     const balance = getBalance(totalAmount, advance)
 
-    useEffect(() => {
-        getOrders()
-    },[placeOrder])
-
     const onSubmit = async (data: OrderSchema) => {
          try {
             const order = {
@@ -53,6 +48,7 @@ export default function Cart () {
                 balance: balance
             }
             await placeOrder(order)
+            getOrders()
             reset({
                 customerName: '',
                 customerPhoneNumber: '',

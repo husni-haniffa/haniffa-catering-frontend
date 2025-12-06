@@ -8,6 +8,7 @@ import { useToastStore } from "../store/toastStore";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Controller, useForm } from "react-hook-form";
 import { updatePaymentSchema, UpdatePaymentSchema } from "../types/Payment";
+import { Ionicons } from "@expo/vector-icons";
 
 export default function Payments () {
 
@@ -64,8 +65,20 @@ export default function Payments () {
     }
 
     return (
-        <View className="flex-1 px-4">   
-            <View className="flex-1 mt-6">  
+        <View className="flex-1 px-4">
+            <View className="mb-6 mt-6 border border-gray-200 rounded-xl bg-white w-full flex-row items-center px-4 py-3">
+                <TextInput
+                    placeholder="Enter Phone Number"
+                    className="flex-1 text-black"
+                    keyboardType="default"
+                />
+                <Ionicons
+                    name="search-sharp"
+                    size={20}
+                    color="gray"
+                />
+            </View>   
+            <View className="flex-1 mt-4">  
                 {paymentsLoading ? 
                     <View className="flex-1 justify-center items-center">
                         <ActivityIndicator size={"large"}/>
