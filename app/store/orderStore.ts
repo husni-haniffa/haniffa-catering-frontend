@@ -6,12 +6,14 @@ interface State {
     orders: Order[]
     orderCreationLoading: boolean
     ordersLoading: boolean
+    searchQuery: string
 }
 
 interface Action {
     placeOrder: (order: Order) => Promise<Order>
     getOrders: () => Promise<Order[]>
     getBalance: (totalAmount: number, advance: number) => number
+    updateSearchQuery: (query: State['searchQuery']) => void
     
 }
 
@@ -21,6 +23,8 @@ export const useOrderStore = create<State & Action>((set) => ({
     orderCreationLoading: false,
 
     ordersLoading: false,
+
+    searchQuery: '',
 
     placeOrder: async (order) => {
         set({ orderCreationLoading: true})
@@ -40,5 +44,9 @@ export const useOrderStore = create<State & Action>((set) => ({
     getBalance: (totalAmount, advance) => {
         return totalAmount - advance
     },
+
+    updateSearchQuery: (query) => {
+        set({ searchQuery: query })
+    }
     
 }))

@@ -11,8 +11,11 @@ export default function Orders () {
 
     const [showInvoice, setShowInvoice] = useState(false)
 
-    const { orders, ordersLoading, getOrders } = useOrderStore()
+    const { orders, ordersLoading, searchQuery, updateSearchQuery, getOrders } = useOrderStore()
     
+    const filteredOrders = searchQuery === "" ? orders : 
+    orders.filter((order) => order.customerPhoneNumber.toString().includes(searchQuery))
+
     const [selectedOrder, setSelectedOrder] = useState<Order>();
 
     useEffect(() => {
@@ -30,7 +33,9 @@ export default function Orders () {
                 <TextInput
                     placeholder="Enter Phone Number"
                     className="flex-1 text-black"
-                    keyboardType="default"
+                    keyboardType="number-pad"
+                    onChangeText={updateSearchQuery}
+                    value={searchQuery}
                 />
                 <Ionicons
                     name="search-sharp"
@@ -42,13 +47,13 @@ export default function Orders () {
                 <View className="flex-1 justify-center items-center">
                     <ActivityIndicator size={"large"}/>
                 </View> ) :  
-            orders.length === 0 ? (
+            !ordersLoading && filteredOrders.length === 0 ? (
                 <View className="flex-1 justify-center items-center">
                     <Text>No records</Text>
                 </View>
             ) : 
             (
-                <FlatList data={orders} keyExtractor={(order, index) => order.id ?? index.toString()}
+                <FlatList data={filteredOrders} keyExtractor={(order, index) => order.id ?? index.toString()}
                     ItemSeparatorComponent={() => <View style={{height:12}}/>}
                     renderItem={({item}) => (
                         <Pressable onPress={() => openInvoice(item)}>

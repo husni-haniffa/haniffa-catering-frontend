@@ -9,6 +9,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { Controller, useForm } from "react-hook-form";
 import { updatePaymentSchema, UpdatePaymentSchema } from "../types/Payment";
 import { Ionicons } from "@expo/vector-icons";
+import { useOrderStore } from "../store/orderStore";
 
 export default function Payments () {
 
@@ -19,6 +20,11 @@ export default function Payments () {
     const { payments, paymentsLoading, paymentUpdating, 
             updatePayment, getPayments } = usePaymentStore()
     
+    const { searchQuery, updateSearchQuery } = useOrderStore()
+
+    const filteredPayments = searchQuery === "" ? payments : 
+    payments.filter((payment) => payment.customerPhoneNumber.toString().includes(searchQuery))
+
     useEffect(() => {
         getPayments()
     }, [])
@@ -70,7 +76,10 @@ export default function Payments () {
                 <TextInput
                     placeholder="Enter Phone Number"
                     className="flex-1 text-black"
-                    keyboardType="default"
+                    keyboardType="number-pad"
+                    onChangeText={updateSearchQuery}
+                    value={searchQuery}
+                    
                 />
                 <Ionicons
                     name="search-sharp"
@@ -83,12 +92,12 @@ export default function Payments () {
                     <View className="flex-1 justify-center items-center">
                         <ActivityIndicator size={"large"}/>
                     </View> : 
-                payments.length === 0 ? (
+                !paymentsLoading && filteredPayments.length === 0 ? (
                     <View className="flex-1 justify-center items-center">
                         <Text>No records</Text>
                     </View>
                 ) : (
-                <FlatList data={payments} keyExtractor={payment => payment.id}
+                <FlatList data={filteredPayments} keyExtractor={payment => payment.id}
                     ItemSeparatorComponent={() => <View style={{height:12}}/>}
                     renderItem={({item}) => (
                     <Pressable onPress={() => openPayment(item.id)}>
