@@ -18,7 +18,8 @@
         "monochromeImage": "./assets/images/android-icon-monochrome.png"
       },
       "edgeToEdgeEnabled": true,
-      "predictiveBackGestureEnabled": false
+      "predictiveBackGestureEnabled": false,
+      "package": "com.husni.dev.haniffacateringfrontend"
     },
     "web": {
       "bundler": "metro",
@@ -52,6 +53,13 @@
     "experiments": {
       "typedRoutes": true,
       "reactCompiler": true
-    }
+    },
+    "extra": {
+      "router": {},
+      "eas": {
+        "projectId": "ff0e246e-683e-49ce-9c46-247d07bfc2a1"
+      }
+    },
+    "owner": "husni.dev"
   }
 }
