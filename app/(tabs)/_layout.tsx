@@ -1,16 +1,35 @@
 import { Tabs } from "expo-router";
 import { Ionicons } from "@expo/vector-icons";
+import { Pressable } from "react-native";
+import { useOrderStore } from "../store/orderStore";
+import { usePaymentStore } from "../store/paymentStore";
+import { useItemStore } from "../store/itemStore";
 
 export default function TabsLayout () {
+    const { getOrders, getOrderSummary } = useOrderStore()
+    const { getPayments } = usePaymentStore()
+    const { getItems } = useItemStore()
+    
     return (
-        <Tabs>
+        <Tabs 
+        screenOptions={
+            {
+            tabBarActiveTintColor: "green", 
+            tabBarInactiveTintColor: "black",
+            tabBarLabelStyle: {fontSize: 12, fontWeight: "bold"},
+            tabBarStyle: {height: 75}
+            }
+        }>
             <Tabs.Screen
                 name="index"
                 options={
                     {   
                         title: "Home",
-                        tabBarIcon: () => (
-                            <Ionicons name="home" size={25}/>
+                        headerTitleStyle: {
+                            fontWeight: "bold"
+                        },
+                        tabBarIcon: ({color}) => (
+                            <Ionicons name="home-sharp" size={20} color={color}/>
                         )
                     }
                 }
@@ -20,8 +39,35 @@ export default function TabsLayout () {
                 options={
                     {
                         title: "Orders",
-                        tabBarIcon: () => (
-                            <Ionicons name="cafe" size={25}/>
+                        headerTitleStyle: {
+                            fontWeight: "bold"
+                        },
+                        tabBarIcon: ({color}) => (
+                            <Ionicons name="restaurant-sharp" size={20} color={color}/>
+                        ),
+                        headerRight: () => (
+                            <Pressable className="mr-9" onPress={getOrders}>
+                                <Ionicons name="reload-outline" size={25} color={"black"}/>
+                            </Pressable>
+                        )
+                    }
+                }
+            />
+            <Tabs.Screen
+                name="dashboard"
+                options={
+                    {
+                        title: "Dashboard",
+                        headerTitleStyle: {
+                            fontWeight: "bold"
+                        },
+                        tabBarIcon: ({color}) => (
+                            <Ionicons name="speedometer-sharp" size={20} color={color}/>
+                        ),
+                        headerRight: () => (
+                            <Pressable className="mr-9" onPress={getOrderSummary}>
+                                <Ionicons name="reload-outline" size={25} color={"black"}/>
+                            </Pressable>
                         )
                     }
                 }
@@ -31,8 +77,35 @@ export default function TabsLayout () {
                 options={
                     {
                         title: "Payments",
-                        tabBarIcon: () => (
-                            <Ionicons name="cash-outline" size={25}/>
+                        headerTitleStyle: {
+                            fontWeight: "bold"
+                        },
+                        tabBarIcon: ({color}) => (
+                            <Ionicons name="cash-sharp" size={20} color={color}/>
+                        ),
+                        headerRight: () => (
+                            <Pressable className="mr-9" onPress={getPayments}>
+                                <Ionicons name="reload-outline" size={25} color={"black"}/>
+                            </Pressable>
+                        )
+                    }
+                }
+            />
+            <Tabs.Screen
+                name="item"
+                options={
+                    {
+                        title: "Items",
+                        headerTitleStyle: {
+                            fontWeight: "bold"
+                        },
+                        tabBarIcon: ({color}) => (
+                            <Ionicons name="fast-food-sharp" size={20} color={color}/>
+                        ),
+                        headerRight: () => (
+                            <Pressable className="mr-9" onPress={getItems}>
+                                <Ionicons name="reload-outline" size={25} color={"black"}/>
+                            </Pressable>
                         )
                     }
                 }

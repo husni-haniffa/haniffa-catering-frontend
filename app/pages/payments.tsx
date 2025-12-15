@@ -1,60 +1,116 @@
 import { Badge, BadgeText } from "@/components/ui/badge";
 import { Card } from "@/components/ui/card";
-import { Ionicons } from "@expo/vector-icons";
 import { useEffect, useState } from "react";
 import { View, Text, Pressable, Modal, TextInput, FlatList, ActivityIndicator} from "react-native";
-import { SafeAreaView } from "react-native-safe-area-context";
-import { Payment } from "../types/Payment";
 import { usePaymentStore } from "../store/paymentStore";
 import { Button, ButtonText, ButtonSpinner } from "@/components/ui/button";
 import { useToastStore } from "../store/toastStore";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { Controller, useForm } from "react-hook-form";
+import { updatePaymentSchema, UpdatePaymentSchema } from "../types/Payment";
+import { Ionicons } from "@expo/vector-icons";
+import { useOrderStore } from "../store/orderStore";
 
 export default function Payments () {
-    const [showPaymentDetails, setPaymentDetails] = useState(false)
-    const [selectedPaymentId, setSelectedPaymentId] = useState<String>('')
-    const {payments, paymentsLoading, getPayments, payingAmount, paymentProcessing, updatePayingAmount, updatePayment} = usePaymentStore()
-    const toast = useToastStore((state) => state.toast)
-    useEffect(() => {
-            getPayments()
-        }, [])
- const selectedPayment = payments.find(p => p.id === selectedPaymentId);
-    const openPayment = (id: string) => {
-            setSelectedPaymentId(id)
-            setPaymentDetails(true)
-        }
 
-        const handleUpdatePayment = async (id: string, amount: number) => {
-            try {   
-                     
-                    await updatePayment(id, amount)
-                    toast('success', 'Success', 'Payment Updated')
-            updatePayingAmount(0)
-          getPayments()
-            } catch (error) {
-                console.log(error)
-                toast('success', 'Success', 'Fail to Update Payment')
-            }
-           
-        }
-    return (
-        <SafeAreaView>
+    const {toast} = useToastStore()
+
+    const [ showPaymentDetails, setPaymentDetails ] = useState(false)
+
+    const { payments, paymentsLoading, paymentUpdating, 
+            updatePayment, getPayments } = usePaymentStore()
+    
+    const { searchQuery, updateSearchQuery } = useOrderStore()
+
+    const filteredPayments = searchQuery === "" ? payments : 
+    payments.filter((payment) => payment.customerPhoneNumber.toString().includes(searchQuery))
+
+    useEffect(() => {
+        getPayments()
+    }, [])
+            
+    const [selectedPaymentId, setSelectedPaymentId] = useState<string>('')
+
+    let selectedPayment = payments.find(p => p.id === selectedPaymentId);
+    
+    const { control, handleSubmit, formState: { errors }, reset } = useForm<UpdatePaymentSchema>({
+            resolver: zodResolver(updatePaymentSchema),
+                defaultValues: {
+                    amountPaying: '',
+                    amountToPay: 0
+                }
+            })
         
-             {paymentsLoading ? <ActivityIndicator/> : (
-                 <FlatList data={payments} keyExtractor={payment => payment.id}
+    useEffect(() => {
+        if (selectedPayment) {
+                reset({
+                    amountPaying: '',
+                    amountToPay: selectedPayment.amountToPay
+                })
+            }
+        }, [selectedPayment, reset]
+    )
+
+
+    const openPayment = (id: string) => {
+        setSelectedPaymentId(id)
+        setPaymentDetails(true)
+    }
+
+    const onSubmit = async(data: UpdatePaymentSchema) => {
+        try {   
+            updatePayment(selectedPaymentId, Number(data.amountPaying))
+            getPayments()
+            toast('success', 'Payment Updated')
+            reset({ amountPaying: '',})
+            setPaymentDetails(false)
+        } catch (error) {
+            console.log(error)
+            toast('success', 'Failed to update payment')
+        }
+    }
+
+    return (
+        <View className="flex-1 px-4">
+            <View className="mb-6 mt-6 border border-gray-200 rounded-xl bg-white w-full flex-row items-center px-4 py-3">
+                <TextInput
+                    placeholder="Enter Phone Number"
+                    className="flex-1 text-black"
+                    keyboardType="number-pad"
+                    onChangeText={updateSearchQuery}
+                    value={searchQuery}
+                    
+                />
+                <Ionicons
+                    name="search-sharp"
+                    size={20}
+                    color="gray"
+                />
+            </View>   
+            <View className="flex-1 mt-4">  
+                {paymentsLoading ? 
+                    <View className="flex-1 justify-center items-center">
+                        <ActivityIndicator size={"large"}/>
+                    </View> : 
+                !paymentsLoading && filteredPayments.length === 0 ? (
+                    <View className="flex-1 justify-center items-center">
+                        <Text>No records</Text>
+                    </View>
+                ) : (
+                <FlatList data={filteredPayments} keyExtractor={payment => payment.id}
+                    ItemSeparatorComponent={() => <View style={{height:12}}/>}
                     renderItem={({item}) => (
-                        <Pressable onPress={() => openPayment(item.id)}>
-                <Card size="lg" className="flex-row justify-between">
-                    <Text>{item.customerPhoneNumber}</Text>
-                    <Badge size="sm" variant="solid" action="warning">
-                        <BadgeText>{item.paymentStatus}</BadgeText>
-                    </Badge>
-                </Card>
-             </Pressable>
+                    <Pressable onPress={() => openPayment(item.id)}>
+                        <Card size="lg" className="flex-row justify-between items-center">
+                            <Text className="font-semibold">{item.customerPhoneNumber}</Text>
+                            <Badge size="sm" variant="solid" action="warning">
+                                <BadgeText>{item.paymentStatus}</BadgeText>
+                            </Badge>
+                        </Card>
+                    </Pressable>
                     )}
                  />
              )}
-           
-             
             {selectedPayment && (
                 <Modal 
                 visible={showPaymentDetails} 
@@ -62,70 +118,53 @@ export default function Payments () {
                 transparent={true}
                 animationType="fade"
             >   
-                
-                <View className="flex-1 bg-black/50  justify-center items-center">
-                    
-                    <Card size="lg" className="w-full">
-
-                        <View className="grid grid-cols-1 gap-2">
-                            <View className="flex-row justify-between items-center">
-                                <Text>Amount to Pay</Text>
-                                <Text>{selectedPayment.amountToPay}</Text>
-                                
-                            </View>
-
-                            <View className="flex-row justify-between items-center">
-                                <Text>Paid So far</Text>
-                                <Text>{selectedPayment.paid}</Text>
-                            </View>
-
-                            <View className="flex-row justify-between items-center">
-                                <Text>Balance</Text>
-                                <Text>{selectedPayment.balance}</Text>
-                            </View>
-
-                            <View className="flex-row justify-between items-center">
-                                <Text>Paying</Text>
-                                <TextInput placeholder="0.00" className="border-b" keyboardType="number-pad"
-                                 value={payingAmount.toString()} 
-                    onChangeText={(value) => {
-                        const payingAmount = Number(value)
-                        updatePayingAmount(payingAmount)
-                    }}
-                                />
-                            </View>
-
-                            <View className="flex-col gap-3 mt-5">
-                               <Button onPress={() => handleUpdatePayment(selectedPayment.id, payingAmount)}>
-                    {paymentProcessing ? 
-                        
-      <ButtonText className="font-medium text-sm ml-2">
-        <ButtonSpinner color="gray" /> Please wait...
-      </ButtonText> 
-                     : <ButtonText className="font-medium text-sm ml-2">
-                            Place Order
-      </ButtonText> }
-                </Button>
-                                
-                            </View>
-                        </View>
-                        
-                    </Card>
-                </View>
-               
-            </Modal>
+                    <View className="flex-1 bg-black/50  justify-center items-center">  
+                        <Card size="lg" className="w-full">
+                            <View className="flex-col gap-2">
+                                <View className="flex-row justify-between items-center">
+                                    <Text>Amount to Pay</Text>
+                                    <Text>{selectedPayment.amountToPay}</Text>
+                                </View>
+                                <View className="flex-row justify-between items-center">
+                                    <Text >Paid So far</Text>
+                                    <Text>{selectedPayment.paid}</Text>
+                                </View>
+                                <View className="flex-col gap-1">
+                                    <View className="flex-row justify-between items-center">
+                                        <Text  >Paying Now</Text>
+                                        <Controller
+                                        control={control}
+                                        name="amountPaying"
+                                        render={({field: {onChange, onBlur, value}}) => (
+                                            <TextInput placeholder="Enter Amount" className="border border-gray-100 rounded-xl bg-white" 
+                                                onChangeText={onChange} 
+                                                value={value}
+                                                onBlur={onBlur}
+                                                keyboardType="number-pad"
+                                            />
+                                        )}
+                                        />           
+                                    </View>
+                                   {errors.amountPaying && <Text className="text-red-500">{errors.amountPaying.message}</Text>}
+                                </View>
+                                <View className="flex-row justify-between items-center border-t-2 border-b-2 border-gray-200 mt-3">
+                                    <Text  className="font-semibold mt-3 mb-3">Balance</Text>
+                                    <Text className="font-semibold mt-3 mb-3">{selectedPayment.balance}</Text>
+                                </View>
+                                <View className="flex-col gap-3 mt-5">
+                                    <Button onPress={handleSubmit(onSubmit) } action="positive" className="rounded-xl" size="lg">
+                                        {paymentUpdating ? <ButtonSpinner color="white" /> : 
+                                        <ButtonText className="font-medium text-sm ml-2">
+                                            Update Payment
+                                        </ButtonText> }
+                                    </Button>
+                                </View>
+                            </View>            
+                        </Card>
+                    </View>
+                </Modal>
             )}  
-            
-
-
-
-        
-            
-         
-              
-              
-      
-           
-        </SafeAreaView>
+            </View> 
+        </View>
     )
 }
