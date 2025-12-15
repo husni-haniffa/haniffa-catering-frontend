@@ -16,6 +16,8 @@ export default function RootLayout() {
             <Stack.Screen name="pages/items" options={{title: 'Select Items', headerTitleAlign: "center", headerTitleStyle: {fontWeight: "bold"}}}/>
             <Stack.Screen name="pages/cart" options={{title: 'Cart', headerTitleAlign: "center", headerTitleStyle: {fontWeight: "bold"}}}/>
             <Stack.Screen name="pages/payment" options={{title: 'Create Payment', headerTitleAlign: "center", headerTitleStyle: {fontWeight: "bold"}}}/>
+            <Stack.Screen name="pages/item" options={{title: 'Create Item', headerTitleAlign: "center", headerTitleStyle: {fontWeight: "bold"}}}/>
+            <Stack.Screen name="pages/dashboard" options={{title: 'Dashboard', headerTitleAlign: "center", headerTitleStyle: {fontWeight: "bold"}}}/>
           </Stack>
       </OverlayProvider>
     </GluestackUIProvider>

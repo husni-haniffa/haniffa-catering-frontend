@@ -11,6 +11,16 @@ export interface Order {
     balance: number
 }
 
+export interface OrderSummary {
+    id: string,
+    chickenBiriyani: number,
+    beefBiriyani: number,
+    muttonBiriyani: number,
+    chicken: number,
+    exChicken: number,
+    exWattalapam: number
+}
+
 export const orderSchema = z
     .object({
         customerName: z.string().refine(
