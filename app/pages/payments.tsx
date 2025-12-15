@@ -61,12 +61,12 @@ export default function Payments () {
         try {   
             updatePayment(selectedPaymentId, Number(data.amountPaying))
             getPayments()
-            toast('success', 'Success', 'Payment Updated')
+            toast('success', 'Payment Updated')
             reset({ amountPaying: '',})
             setPaymentDetails(false)
         } catch (error) {
             console.log(error)
-            toast('success', 'Success', 'Fail to Update Payment')
+            toast('success', 'Failed to update payment')
         }
     }
 

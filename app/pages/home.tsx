@@ -19,6 +19,14 @@ export default function Home () {
                     <Text className="text-xl font-semibold">Create Payment</Text>
                 </Card>
             </Pressable>
+            <Pressable onPress={() => router.push('/pages/item')}>
+                <Card size="lg" className="flex-col gap-2">
+                    <Ionicons name="fast-food-sharp" size={20} className="bg-green-50 rounded-full w-12 items-center p-3" color="green"/>
+                    <Text className="text-xl font-semibold">Create Item</Text>
+                </Card>
+            </Pressable>
+
+            
       </View>
     )
 }

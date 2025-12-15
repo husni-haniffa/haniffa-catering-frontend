@@ -5,8 +5,11 @@ import { useToastStore } from "../store/toastStore";
 import { PaymentSchema, paymentSchema } from "../types/Payment";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Controller, useForm } from "react-hook-form";
+import { useRouter } from "expo-router";
 
 export default function Payment () { 
+
+    const router = useRouter()
 
     const { payentCreationLoading, createPayment, getPayments } = usePaymentStore()
 
@@ -28,14 +31,15 @@ export default function Payment () {
             }
             await createPayment(payment)
             getPayments()
-            toast("success", "Success!", "Payment Success");
+            toast("success", "Payment Saved");
             reset({
                 customerPhoneNumber: '',
                 amountToPay: ''
             })
+            router.push('/pages/payments')
         } catch (error) {
             console.log(error)
-            toast('error', "Error", "Payment Creation Failed")
+            toast('error', "Failed to save payment")
         }
     }
 
