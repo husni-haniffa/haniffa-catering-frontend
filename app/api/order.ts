@@ -19,3 +19,9 @@ export const fetchOrders = async () => {
     console.log(data)
     return data;
 }
+
+export const fetchOrderSummary = async () => {
+    const req =  await fetch(`${baseUrl}/api/orders/summary`);
+    const res = await req.json()
+    return res
+}
