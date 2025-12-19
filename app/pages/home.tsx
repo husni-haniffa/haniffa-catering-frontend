@@ -25,8 +25,6 @@ export default function Home () {
                     <Text className="text-xl font-semibold">Create Item</Text>
                 </Card>
             </Pressable>
-
-            
       </View>
     )
 }
