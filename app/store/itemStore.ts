@@ -42,8 +42,7 @@ export const useItemStore = create<State & Action>((set) => ({
     deleteItem: async(id) => {
         set({ deletingItemId: id })
         await deleteItem(id)
-        set((state) => ({items: state.items.filter(item => item.id !== id), deletingItemId: null}))
-        
+        set((state) => ({items: state.items.filter(item => item.id !== id), deletingItemId: null}))  
     }
 
 }))
