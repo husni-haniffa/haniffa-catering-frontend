@@ -9,16 +9,12 @@ export interface Order {
     totalAmount: number
     advance: number
     balance: number
+    
 }
 
 export interface OrderSummary {
     id: string,
-    chickenBiriyani: number,
-    beefBiriyani: number,
-    muttonBiriyani: number,
-    chicken: number,
-    exChicken: number,
-    exWattalapam: number
+    itemCounts: any
 }
 
 export const orderSchema = z

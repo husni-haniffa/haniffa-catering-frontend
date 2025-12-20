@@ -36,9 +36,8 @@ export default function Payment () {
                 customerPhoneNumber: '',
                 amountToPay: ''
             })
-            router.push('/pages/payments')
+            router.push('/(tabs)/payment')
         } catch (error) {
-            console.log(error)
             toast('error', "Failed to save payment")
         }
     }
@@ -82,7 +81,14 @@ export default function Payment () {
             </View>
             <View className="mb-6">
                 <Button onPress={handleSubmit(onSubmit)} action="custom" className="bg-blue-500 active:bg-blue-500 hover:bg-blue-500 rounded-xl" size="lg">
-                    {payentCreationLoading ? <ButtonSpinner color="white" /> : 
+                    {payentCreationLoading ? 
+                         <View className="flex-row items-center ml-2">
+            <ButtonText className="font-medium text-sm">
+                Please wait
+            </ButtonText>
+            <ButtonSpinner color="white" className="ml-2" />
+        </View>
+                        : 
                         <ButtonText className="font-medium text-sm ml-2">
                             Save Payment
                         </ButtonText> 

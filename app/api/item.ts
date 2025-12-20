@@ -5,39 +5,34 @@ export const baseUrl = process.env.EXPO_PUBLIC_BASE_URL
 export const fetchItem = async (id: string): Promise<Item> => {
     const response = await fetch(`${baseUrl}/api/items/${id}`);
     const data = await response.json()
-    console.log(data)
     return data;
 }
 
 export const fetchItems = async () => {
     const response = await fetch(`${baseUrl}/api/items`);
     const data = await response.json()
-    console.log(data)
     return data;
 }
 
 export const createItem = async (item: any) => {
-    const req = await fetch(``, {
+    const response = await fetch(``, {
         method: 'POST',
         body: JSON.stringify(item),
         headers: {
             'Content-Type': "application/json"
         }
     })
-    const res = await req.json()
-    return res
+    const data = await response.json()
+    return data
 }
 
 export const deleteItem = async (id: string) => {
-    const req = await fetch(`${baseUrl}/api/items/${id}`, {
+    const response = await fetch(`${baseUrl}/api/items/${id}`, {
         method: 'DELETE',
         headers: {
             'Content-Type': 'application/json',
         }
     })
-    const res = await req.json()
-    if(!res) {
-        return false
-    }
-    return true
+    const data = await response.json()
+    return data
 }

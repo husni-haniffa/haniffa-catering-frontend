@@ -26,7 +26,8 @@ export default function Items () {
         <View className="flex-1 justify-between">
           {itemsLoading ? ( 
               <View className="flex-1 justify-center items-center">
-                <ActivityIndicator size={"large"}/>
+                <Text className="mb-1">Please wait</Text>
+                <ActivityIndicator/>
               </View> 
             ) : items.length === 0 ? 
             ( <View className="flex-1 justify-center items-center">

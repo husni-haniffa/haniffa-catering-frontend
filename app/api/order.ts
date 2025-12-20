@@ -16,12 +16,11 @@ export const createOrder = async (order: Order) => {
 export const fetchOrders = async () => {
     const response = await fetch(`${baseUrl}/api/orders`);
     const data = await response.json()
-    console.log(data)
     return data;
 }
 
 export const fetchOrderSummary = async () => {
-    const req =  await fetch(`${baseUrl}/api/orders/summary`);
-    const res = await req.json()
-    return res
+    const response =  await fetch(`${baseUrl}/api/orders/summary`);
+    const data = await response.json()
+    return data
 }

@@ -62,10 +62,9 @@ export default function Cart () {
             })
             toast("success", "Order Placed");
             clearCart()
-            router.push('/pages/orders')
+            router.push('/(tabs)/order')
         } catch (error) {
             toast("error", "Failed to place order");
-            console.log(error)
         }
     }
        
@@ -171,7 +170,12 @@ export default function Cart () {
                             <Text className="font-semibold mt-3">{balance}</Text>
                         </View>
                         <Button action="positive" onPress={handleSubmit(onSubmit)} className="mb-6 rounded-xl mt-6" size="lg">
-                            {orderCreationLoading ? <ButtonSpinner color="white" /> : <ButtonText className="font-medium text-sm ml-2">Place Order</ButtonText>}
+                            {orderCreationLoading ? <View className="flex-row items-center ml-2">
+            <ButtonText className="font-medium text-sm">
+                Please wait
+            </ButtonText>
+            <ButtonSpinner color="white" className="ml-2" />
+        </View> : <ButtonText className="font-medium text-sm ml-2">Place Order</ButtonText>}
                         </Button>
                 </Card>
         </View>

@@ -43,7 +43,7 @@ export const usePaymentStore = create<State & Action>((set, get) => ({
         const data = await updatePayment(id, amount)
         set((state) => ({
             payments: state.payments.map(
-                p => p.id === id ? {...p, paid: p.paid + amount, balance: p.balance - amount} : p
+                p => p.id === id ? data : p
             )
         }))
         set({ paymentUpdating: false })

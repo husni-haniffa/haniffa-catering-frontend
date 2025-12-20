@@ -45,7 +45,8 @@ export default function Orders () {
             </View>
             {ordersLoading ? (
                 <View className="flex-1 justify-center items-center">
-                    <ActivityIndicator size={"large"}/>
+                    <Text className="mb-1">Please wait</Text>
+                    <ActivityIndicator/>
                 </View> ) :  
             !ordersLoading && filteredOrders.length === 0 ? (
                 <View className="flex-1 justify-center items-center">
