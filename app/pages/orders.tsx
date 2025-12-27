@@ -122,10 +122,10 @@ export default function Orders () {
                                 </View>
                             </View>
                              <View className="flex-1 mt-2">
-                                    <Button className={`rounded-xl ${item.orderPaymentStatus === "PAID" || orderPaidId === item.id ? 'opacity-75' : ''}`}
+                                    <Button className={`rounded-xl ${item.orderPaymentStatus === "PAID" || orderPaidId === item.id ? 'opacity-50' : ''}`}
                                             action="secondary" 
                                             onPress={() => orderPaid(item.id?.toString() ?? "0")}
-                                            disabled={item.orderPaymentStatus === "PAID" || orderPaidId === item.id}>
+                                            disabled={item.orderPaymentStatus === "PAID" || orderPaidId === item.id || item.orderStatus === "CANCELLED"}>
                                             {orderPaidId === item.id ? <ActivityIndicator/> : <ButtonText>Paid</ButtonText>}
                                     </Button>
                                 </View>
