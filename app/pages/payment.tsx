@@ -1,11 +1,10 @@
-import { TextInput, View, Text } from "react-native";
-import { usePaymentStore } from "../store/paymentStore";
-import { Button, ButtonText, ButtonSpinner } from "@/components/ui/button";
-import { useToastStore } from "../store/toastStore";
-import { PaymentSchema, paymentSchema } from "../types/Payment";
+import { Button, ButtonSpinner, ButtonText } from "@/components/ui/button";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Controller, useForm } from "react-hook-form";
 import { useRouter } from "expo-router";
+import { Controller, useForm } from "react-hook-form";
+import { Text, TextInput, View } from "react-native";import { usePaymentStore } from "../../store/paymentStore";
+import { useToastStore } from "../../store/toastStore";
+import { paymentSchema, PaymentSchema } from "@/types/Payment";
 
 export default function Payment () { 
 

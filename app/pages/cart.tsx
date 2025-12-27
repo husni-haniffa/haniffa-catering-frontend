@@ -1,16 +1,17 @@
+import { Button, ButtonSpinner, ButtonText } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
-import { Button, ButtonText, ButtonSpinner } from "@/components/ui/button";
-import { Ionicons } from "@expo/vector-icons";
-import { TextInput, View, Text, Pressable, FlatList, Modal } from "react-native";
-import { useCartStore } from "../store/cartStore";
-import { useOrderStore } from "../store/orderStore";
-import { useToastStore } from "../store/toastStore";
-import { useEffect, useState } from "react";
-import { useForm, Controller } from 'react-hook-form';
-import { zodResolver } from '@hookform/resolvers/zod';
-import { OrderSchema, orderSchema } from "../types/Order";
 import CustomItem from "@/components/ui/custom-item";
+import { Ionicons } from "@expo/vector-icons";
+import { zodResolver } from '@hookform/resolvers/zod';
 import { useRouter } from "expo-router";
+import { useState } from "react";
+import { Controller, useForm } from 'react-hook-form';
+import { FlatList, Modal, Pressable, Text, TextInput, View } from "react-native";
+
+import { useCartStore } from "../../store/cartStore";
+import { useOrderStore } from "../../store/orderStore";
+import { useToastStore } from "../../store/toastStore";
+import { orderSchema, OrderSchema } from "@/types/Order";
 
 export default function Cart () {
 

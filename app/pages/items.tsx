@@ -1,11 +1,11 @@
+import { Button, ButtonText } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Ionicons } from "@expo/vector-icons";
 import { useRouter } from "expo-router";
-import { View, Text, Pressable, FlatList, ActivityIndicator } from "react-native";
-import { useItemStore } from "../store/itemStore";
-import { useCartStore } from "../store/cartStore";
 import { useEffect } from "react";
-import { Button, ButtonText } from "@/components/ui/button";
+import { ActivityIndicator, FlatList, Pressable, Text, View } from "react-native";
+import { useCartStore } from "../../store/cartStore";
+import { useItemStore } from "../../store/itemStore";
 
 export default function Items () {
 

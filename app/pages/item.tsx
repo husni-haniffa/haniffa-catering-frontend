@@ -1,11 +1,12 @@
-import { TextInput, View, Text } from "react-native";
-import { Button, ButtonText, ButtonSpinner } from "@/components/ui/button";
+import { Button, ButtonSpinner, ButtonText } from "@/components/ui/button";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Controller, useForm } from "react-hook-form";
-import { useItemStore } from "../store/itemStore";
-import { ItemSchema, itemSchema } from "../types/Item";
-import { useToastStore } from "../store/toastStore";
 import { useRouter } from "expo-router";
+import { Controller, useForm } from "react-hook-form";
+import { Text, TextInput, View } from "react-native";
+
+import { useItemStore } from "../../store/itemStore";
+import { useToastStore } from "../../store/toastStore";
+import { itemSchema, ItemSchema } from "@/types/Item";
 
 export default function Item () {
 
@@ -36,8 +37,9 @@ export default function Item () {
                     itemName: '',
                     itemPrice: ''
                 })
-                router.push('/(tabs)/item')
+                // router.push('/(tabs)/item')
             } catch (error) {
+                console.log(error)
                 toast('error', "Item creation failed")
             }
         }

@@ -1,6 +1,5 @@
-import { Modal, View, Text, Pressable } from "react-native";
-import { useToastStore } from "@/app/store/toastStore";
-import { Badge, BadgeText } from "../badge";
+import { useToastStore } from "@/store/toastStore";
+import { Modal, Text, View } from "react-native";
 
 const Toast = () => {
     const {visible, type, message} = useToastStore()

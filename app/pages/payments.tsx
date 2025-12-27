@@ -1,15 +1,16 @@
 import { Badge, BadgeText } from "@/components/ui/badge";
+import { Button, ButtonSpinner, ButtonText } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
-import { useEffect, useState } from "react";
-import { View, Text, Pressable, Modal, TextInput, FlatList, ActivityIndicator} from "react-native";
-import { usePaymentStore } from "../store/paymentStore";
-import { Button, ButtonText, ButtonSpinner } from "@/components/ui/button";
-import { useToastStore } from "../store/toastStore";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { Controller, useForm } from "react-hook-form";
-import { updatePaymentSchema, UpdatePaymentSchema } from "../types/Payment";
 import { Ionicons } from "@expo/vector-icons";
-import { useOrderStore } from "../store/orderStore";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useEffect, useState } from "react";
+import { Controller, useForm } from "react-hook-form";
+import { ActivityIndicator, FlatList, Modal, Pressable, Text, TextInput, View } from "react-native";
+
+import { useOrderStore } from "../../store/orderStore";
+import { usePaymentStore } from "../../store/paymentStore";
+import { useToastStore } from "../../store/toastStore";
+import { UpdatePaymentSchema, updatePaymentSchema } from "@/types/Payment";
 
 
 export default function Payments () {

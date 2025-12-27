@@ -1,9 +1,9 @@
-import { View, Text, Pressable, FlatList, ActivityIndicator, TextInput } from "react-native";
 import { Card } from "@/components/ui/card";
-import { useEffect, useState } from "react";
-import { useItemStore } from "../store/itemStore";
 import { Ionicons } from "@expo/vector-icons";
-import { useOrderStore } from "../store/orderStore";
+import { useEffect } from "react";
+import { ActivityIndicator, FlatList, Pressable, Text, TextInput, View } from "react-native";
+import { useItemStore } from "../../store/itemStore";
+import { useOrderStore } from "../../store/orderStore";
 
 export default function AllItems () {
     const { items, itemsLoading, deletingItemId, 
