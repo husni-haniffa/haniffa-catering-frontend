@@ -10,8 +10,8 @@ export const itemSchema = z.object({
     itemName: z
     .string()
     .regex(/^[A-Za-z ]+$/, 'Item name must be only letters')
-    .min(5, 'Item name must be within 5-20 charactors')
-    .max(5, 'Item name must be within 5-20 charactors'),
+    .min(5, 'Item name must be within 5-30 charactors')
+    .max(30, 'Item name must be within 5-30 charactors'),
 
     itemPrice: z
         .string()

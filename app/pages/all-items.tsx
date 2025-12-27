@@ -1,24 +1,30 @@
-import { View, Text, Pressable, FlatList, ActivityIndicator, TextInput } from "react-native";
 import { Card } from "@/components/ui/card";
-import { useEffect, useState } from "react";
-import { useItemStore } from "../store/itemStore";
 import { Ionicons } from "@expo/vector-icons";
-import { useOrderStore } from "../store/orderStore";
+import { useEffect } from "react";
+import { ActivityIndicator, FlatList, Pressable, Text, TextInput, View } from "react-native";
+import { useItemStore } from "../../store/itemStore";
+import { useOrderStore } from "../../store/orderStore";
+
 export default function AllItems () {
-    const { items, itemsLoading, deletingItemId, deleteItem, getItems } = useItemStore()
+    const { items, itemsLoading, deletingItemId, 
+            deleteItem, getItems } = useItemStore()
+
     useEffect(() => {
         getItems()
     }, [])
- const { searchQuery, updateSearchQuery } = useOrderStore()
- const filteredItems = searchQuery === "" ? items : 
-    items.filter((item) => item.name.toString().includes(searchQuery))
+
+    const { searchQuery, updateSearchQuery } = useOrderStore()
+    
+    const filteredItems = searchQuery === "" ? items : 
+        items.filter((item) => item.name.toString().includes(searchQuery))
+
     return (
         <View className="flex-1 px-4">
             <View className="mb-6 mt-6 border border-gray-200 rounded-xl bg-white w-full flex-row items-center px-4 py-3">
                 <TextInput
-                    placeholder="Enter Phone Number"
+                    placeholder="Enter Item Name"
                     className="flex-1 text-black"
-                    keyboardType="number-pad"
+                    keyboardType="default"
                     onChangeText={updateSearchQuery}
                     value={searchQuery}
                     
@@ -32,7 +38,8 @@ export default function AllItems () {
             <View className="flex-1 mt-4">
                 {itemsLoading ? 
                     <View className="flex-1 justify-center items-center">
-                        <ActivityIndicator size={"large"}/>
+                        <Text className="mb-1">Please wait</Text>
+                        <ActivityIndicator/>
                     </View> : 
                 !itemsLoading && items.length === 0 ? (
                     <View className="flex-1 justify-center items-center">

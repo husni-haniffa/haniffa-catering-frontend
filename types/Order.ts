@@ -9,16 +9,14 @@ export interface Order {
     totalAmount: number
     advance: number
     balance: number
+    orderStatus?: string
+    orderPaymentStatus?: string
+    orderPaymentType?: string
+    
 }
 
 export interface OrderSummary {
-    id: string,
-    chickenBiriyani: number,
-    beefBiriyani: number,
-    muttonBiriyani: number,
-    chicken: number,
-    exChicken: number,
-    exWattalapam: number
+    itemCounts: Record<string, number>;
 }
 
 export const orderSchema = z

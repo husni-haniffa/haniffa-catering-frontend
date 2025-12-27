@@ -1,16 +1,17 @@
+import { Button, ButtonSpinner, ButtonText } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
-import { Button, ButtonText, ButtonSpinner } from "@/components/ui/button";
-import { Ionicons } from "@expo/vector-icons";
-import { TextInput, View, Text, Pressable, FlatList, Modal } from "react-native";
-import { useCartStore } from "../store/cartStore";
-import { useOrderStore } from "../store/orderStore";
-import { useToastStore } from "../store/toastStore";
-import { useEffect, useState } from "react";
-import { useForm, Controller } from 'react-hook-form';
-import { zodResolver } from '@hookform/resolvers/zod';
-import { OrderSchema, orderSchema } from "../types/Order";
 import CustomItem from "@/components/ui/custom-item";
+import { Ionicons } from "@expo/vector-icons";
+import { zodResolver } from '@hookform/resolvers/zod';
 import { useRouter } from "expo-router";
+import { useState } from "react";
+import { Controller, useForm } from 'react-hook-form';
+import { FlatList, Modal, Pressable, Text, TextInput, View } from "react-native";
+
+import { useCartStore } from "../../store/cartStore";
+import { useOrderStore } from "../../store/orderStore";
+import { useToastStore } from "../../store/toastStore";
+import { orderSchema, OrderSchema } from "@/types/Order";
 
 export default function Cart () {
 
@@ -62,10 +63,9 @@ export default function Cart () {
             })
             toast("success", "Order Placed");
             clearCart()
-            router.push('/pages/orders')
+            router.push('/(tabs)/order')
         } catch (error) {
             toast("error", "Failed to place order");
-            console.log(error)
         }
     }
        
@@ -171,7 +171,12 @@ export default function Cart () {
                             <Text className="font-semibold mt-3">{balance}</Text>
                         </View>
                         <Button action="positive" onPress={handleSubmit(onSubmit)} className="mb-6 rounded-xl mt-6" size="lg">
-                            {orderCreationLoading ? <ButtonSpinner color="white" /> : <ButtonText className="font-medium text-sm ml-2">Place Order</ButtonText>}
+                            {orderCreationLoading ? <View className="flex-row items-center ml-2">
+            <ButtonText className="font-medium text-sm">
+                Please wait
+            </ButtonText>
+            <ButtonSpinner color="white" className="ml-2" />
+        </View> : <ButtonText className="font-medium text-sm ml-2">Place Order</ButtonText>}
                         </Button>
                 </Card>
         </View>

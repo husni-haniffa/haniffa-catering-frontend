@@ -1,11 +1,10 @@
-import { TextInput, View, Text } from "react-native";
-import { usePaymentStore } from "../store/paymentStore";
-import { Button, ButtonText, ButtonSpinner } from "@/components/ui/button";
-import { useToastStore } from "../store/toastStore";
-import { PaymentSchema, paymentSchema } from "../types/Payment";
+import { Button, ButtonSpinner, ButtonText } from "@/components/ui/button";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Controller, useForm } from "react-hook-form";
 import { useRouter } from "expo-router";
+import { Controller, useForm } from "react-hook-form";
+import { Text, TextInput, View } from "react-native";import { usePaymentStore } from "../../store/paymentStore";
+import { useToastStore } from "../../store/toastStore";
+import { paymentSchema, PaymentSchema } from "@/types/Payment";
 
 export default function Payment () { 
 
@@ -36,9 +35,8 @@ export default function Payment () {
                 customerPhoneNumber: '',
                 amountToPay: ''
             })
-            router.push('/pages/payments')
+            router.push('/(tabs)/payment')
         } catch (error) {
-            console.log(error)
             toast('error', "Failed to save payment")
         }
     }
@@ -82,7 +80,14 @@ export default function Payment () {
             </View>
             <View className="mb-6">
                 <Button onPress={handleSubmit(onSubmit)} action="custom" className="bg-blue-500 active:bg-blue-500 hover:bg-blue-500 rounded-xl" size="lg">
-                    {payentCreationLoading ? <ButtonSpinner color="white" /> : 
+                    {payentCreationLoading ? 
+                         <View className="flex-row items-center ml-2">
+            <ButtonText className="font-medium text-sm">
+                Please wait
+            </ButtonText>
+            <ButtonSpinner color="white" className="ml-2" />
+        </View>
+                        : 
                         <ButtonText className="font-medium text-sm ml-2">
                             Save Payment
                         </ButtonText> 
