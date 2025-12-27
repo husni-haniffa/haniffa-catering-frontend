@@ -1,17 +1,23 @@
 import { Badge, BadgeText } from "@/components/ui/badge";
+import { Button, ButtonText } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Ionicons } from "@expo/vector-icons";
 import { useEffect, useState } from "react";
-import { View, Text, Pressable, Modal, FlatList, ActivityIndicator, TextInput } from "react-native";;;
-import { useOrderStore } from "../store/orderStore";
-import { Order } from "../types/Order";
-import { Button, ButtonText } from "@/components/ui/button";
+import { ActivityIndicator, FlatList, Modal, Text, TextInput, View } from "react-native";
+
+import { useOrderStore } from "../../store/orderStore";
+import { Order } from "@/types/Order";
+;;
 
 export default function Orders () {
 
     const [showInvoice, setShowInvoice] = useState(false)
 
-    const { orders, ordersLoading, searchQuery, updateSearchQuery, getOrders } = useOrderStore()
+    const { orders, ordersLoading, searchQuery, 
+            orderCancelId, orderPaidId, orderDeliveredId, 
+            orderPaymentTypeBankId, orderPaymentTypeCashId, orderPaymentTypeCash,
+            updateSearchQuery, getOrders, cancelOrder, 
+            orderPaid, orderDelivered, orderPaymentTypeBank } = useOrderStore()
     
     const filteredOrders = searchQuery === "" ? orders : 
     orders.filter((order) => order.customerPhoneNumber.toString().includes(searchQuery))
@@ -45,7 +51,8 @@ export default function Orders () {
             </View>
             {ordersLoading ? (
                 <View className="flex-1 justify-center items-center">
-                    <ActivityIndicator size={"large"}/>
+                    <Text className="mb-1">Please wait</Text>
+                    <ActivityIndicator/>
                 </View> ) :  
             !ordersLoading && filteredOrders.length === 0 ? (
                 <View className="flex-1 justify-center items-center">
@@ -56,25 +63,74 @@ export default function Orders () {
                 <FlatList data={filteredOrders} keyExtractor={(order, index) => order.id ?? index.toString()}
                     ItemSeparatorComponent={() => <View style={{height:12}}/>}
                     renderItem={({item}) => (
-                        <Pressable onPress={() => openInvoice(item)}>
-                            <Card size="lg" className="flex-col gap-2">
-                                <View className="flex-row justify-between items-center">
-                                    <View>
-                                        <Text className="font-semibold">Order  {item.id}</Text>
-                                        <Text className="text-gray-300">Order Date</Text>
-                                    </View>
-                                    <Badge size="sm" variant="solid" action="warning">
-                                        <BadgeText>Pending</BadgeText>
-                                    </Badge>
-                                </View>
+                        <Card size="lg" className="flex-col gap-3">
+
+                            <View className="flex-row justify-between items-center">
                                 <View>
-                                    <Text className="font-semibold">{item.customerPhoneNumber}</Text>
+                                    <Text className="font-semibold">Order: {item.id}</Text>
+                                    <Text>{item.customerPhoneNumber}</Text>
                                 </View>
-                            </Card>
-                        </Pressable>
-                    )}
-                />
-            )}
+                                <Badge size="sm" variant="solid" action={item.orderStatus === "PENDING" ? "warning" : item.orderStatus === "CANCELLED" ? "error" : "success"}>
+                                    <BadgeText>{item.orderStatus}</BadgeText>
+                                </Badge>
+                            </View>
+
+                            <View className="flex-row justify-between items-center">
+                                <Text>Payment</Text>
+                                <Badge size="sm" variant="solid" action={item.orderPaymentStatus === "PENDING" ? "error" : "success"}>
+                                    <BadgeText>{item.orderPaymentStatus}</BadgeText>
+                                </Badge>
+                            </View>
+
+                            <View className="flex-row justify-between items-center">
+                                <Badge size="sm" variant="solid" action={item.orderPaymentType === "BANK" ? "info" : "warning"}>
+                                    <BadgeText>Payment {item.orderPaymentType}</BadgeText>
+                                </Badge>
+                                {item.orderPaymentType === "BANK" ? <Button className={`rounded-xl bg-yellow-500 ${item.orderStatus === "CANCELLED" ? 'opacity-75': ""}`} 
+                                            action="custom" 
+                                            onPress={() => orderPaymentTypeCash(item.id?.toString() ?? "0")} 
+                                            disabled={item.orderStatus === "CANCELLED"}
+                                            >
+                                         {orderPaymentTypeCashId === item.id ? <ActivityIndicator/> : <ButtonText>Change Cash</ButtonText>}
+                                    </Button> : <Button className={`rounded-xl bg-blue-900 ${item.orderStatus === "CANCELLED" ? 'opacity-75': ""}`} 
+                                            action="custom" 
+                                            onPress={() => orderPaymentTypeBank(item.id?.toString() ?? "0")} 
+                                             disabled={item.orderStatus === "CANCELLED"}
+                                            >
+                                        {orderPaymentTypeBankId === item.id ? <ActivityIndicator/> : <ButtonText>Change Bank</ButtonText>}
+                                    </Button>}
+                                
+                                
+                            </View>
+
+                            <View className="flex-row items-center gap-3 mt-3">
+                                <View className="flex-1">
+                                    <Button className={`rounded-xl ${item.orderStatus === "CANCELLED" || item.orderStatus === "DELIVERED" || orderCancelId === item.id ? 'opacity-75' : ''}`} 
+                                            action="negative" 
+                                            onPress={() => cancelOrder(item.id?.toString() ?? "0")} 
+                                            disabled={
+                                                item.orderStatus === "CANCELLED" ||
+                                                item.orderStatus === "DELIVERED" || orderCancelId === item.id
+                                                }>
+                                        {orderCancelId === item.id ? <ActivityIndicator/> : <ButtonText>Cancel</ButtonText>}
+                                    </Button>
+                                </View>
+                                <View className="flex-1">
+                                    <Button className="rounded-xl" onPress={() => openInvoice(item)} action="positive">
+                                        <ButtonText>Invoice <Ionicons name="eye-sharp"/></ButtonText>
+                                    </Button>
+                                </View>
+                            </View>
+                             <View className="flex-1 mt-2">
+                                    <Button className={`rounded-xl ${item.orderPaymentStatus === "PAID" || orderPaidId === item.id ? 'opacity-50' : ''}`}
+                                            action="secondary" 
+                                            onPress={() => orderPaid(item.id?.toString() ?? "0")}
+                                            disabled={item.orderPaymentStatus === "PAID" || orderPaidId === item.id || item.orderStatus === "CANCELLED"}>
+                                            {orderPaidId === item.id ? <ActivityIndicator/> : <ButtonText>Paid</ButtonText>}
+                                    </Button>
+                                </View>
+                
+                        </Card>)}/>)}
            
            {selectedOrder && (
             <Modal
@@ -121,9 +177,24 @@ export default function Orders () {
                                 </View>
                             </View>
                         </View>
-                        <Button className="mt-3 rounded xl" action="positive" size="lg">
-                            <ButtonText>Send Invoice</ButtonText>
-                        </Button>
+                         <View className="flex-row items-center gap-3 mt-3">
+                                <View className="flex-1">
+                                    <Button className={`rounded-xl`}
+                                            action="secondary" 
+                                            onPress={() => setShowInvoice(false)}
+                                           >
+                                             <ButtonText>Close</ButtonText>
+                                    </Button>
+                                </View>
+                                <View className="flex-1">
+                                    <Button className={`rounded-xl ${selectedOrder.orderStatus === "CANCELLED" || selectedOrder.orderStatus === "DELIVERED" || orderDeliveredId === selectedOrder.id ? 'opacity-75' : ''}`}
+                                        onPress={() => orderDelivered(selectedOrder.id?.toString() ?? "0")} action="positive"
+                                        disabled={
+                                        selectedOrder.orderStatus === "CANCELLED" || selectedOrder.orderStatus === "DELIVERED" || orderDeliveredId === selectedOrder.id}>
+                                        {orderDeliveredId === selectedOrder.id ? <ActivityIndicator/> : <ButtonText>Delivered</ButtonText>}
+                                    </Button>
+                                </View>
+                            </View>
                     </Card>
                 </View> 
             </Modal>

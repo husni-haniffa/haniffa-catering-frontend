@@ -1,10 +1,12 @@
-import { Modal, View, Text, Pressable } from "react-native";
-import { useToastStore } from "@/app/store/toastStore";
-import { Badge, BadgeText } from "../badge";
+import { useToastStore } from "@/store/toastStore";
+import { Modal, Text, View } from "react-native";
 
 const Toast = () => {
     const {visible, type, message} = useToastStore()
     if(!visible) return null
+
+    const color = type === "success" ? "bg-green-500" :
+                  type=== "error" ? "bg-red-500" : "bg-yellow-500"
 
     return (
         <Modal
@@ -14,10 +16,10 @@ const Toast = () => {
             statusBarTranslucent
             presentationStyle="overFullScreen"
         >
-            <View className="flex-1 bg-black/50 justify-start items-center px-4 pt-16">
-                <Badge size="md" variant="outline" action={type === "success" ? "success" : type === "error" ? "error" : "warning"}>
-                    <BadgeText>{message}</BadgeText>
-                </Badge>
+            <View className="absolute top-12 self-center">
+                <View className={`${color} px-4 py-3 items-center rounded-3xl`}>
+                    <Text className="text-white font-semibold">{message}</Text>
+                </View>
             </View>
         </Modal>
     )

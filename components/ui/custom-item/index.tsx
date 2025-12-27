@@ -1,9 +1,8 @@
-import { TextInput, View, Text, Pressable } from "react-native";
-import { Card } from "../card";
-import { Button, ButtonText } from "../button";
-import { Ionicons } from "@expo/vector-icons";
+import { useCartStore } from "@/store/cartStore";
 import { useState } from "react";
-import { useCartStore } from "@/app/store/cartStore";
+import { TextInput, View } from "react-native";
+import { Button, ButtonText } from "../button";
+import { Card } from "../card";
 
 
 export default function CustomItem ({onClose} : any) {

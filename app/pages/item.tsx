@@ -1,12 +1,17 @@
-import { TextInput, View, Text } from "react-native";
-import { Button, ButtonText, ButtonSpinner } from "@/components/ui/button";
+import { Button, ButtonSpinner, ButtonText } from "@/components/ui/button";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { useRouter } from "expo-router";
 import { Controller, useForm } from "react-hook-form";
-import { useItemStore } from "../store/itemStore";
-import { ItemSchema, itemSchema } from "../types/Item";
-import { useToastStore } from "../store/toastStore";
+import { Text, TextInput, View } from "react-native";
+
+import { useItemStore } from "../../store/itemStore";
+import { useToastStore } from "../../store/toastStore";
+import { itemSchema, ItemSchema } from "@/types/Item";
 
 export default function Item () {
+
+    const router = useRouter()
+
     const { itemCreationLoading, createItem, getItems } = useItemStore()
  
     const { control, handleSubmit, formState: { errors }, reset} = useForm<ItemSchema>({
@@ -27,14 +32,15 @@ export default function Item () {
                 }
                 await createItem(item)
                 getItems()
-                toast("success", "Success!", "Item Created");
+                toast("success", "Item created");
                 reset({
                     itemName: '',
                     itemPrice: ''
                 })
+                // router.push('/(tabs)/item')
             } catch (error) {
                 console.log(error)
-                toast('error', "Error", "Item Creation Failed")
+                toast('error', "Item creation failed")
             }
         }
 
@@ -76,7 +82,12 @@ export default function Item () {
                     </View>
                     <View className="mb-6">
                         <Button onPress={handleSubmit(onSubmit)} action="custom" className="bg-blue-500 active:bg-blue-500 hover:bg-blue-500 rounded-xl" size="lg">
-                            {itemCreationLoading ? <ButtonSpinner color="white" /> : 
+                            {itemCreationLoading ? <View className="flex-row items-center ml-2">
+            <ButtonText className="font-medium text-sm">
+                Please wait
+            </ButtonText>
+            <ButtonSpinner color="white" className="ml-2" />
+        </View> : 
                                 <ButtonText className="font-medium text-sm ml-2">
                                     Save Item
                                 </ButtonText> 

@@ -50,7 +50,7 @@ export const updatePaymentSchema = z.object({
             ctx.addIssue({
                 code: z.ZodIssueCode.custom,
                 message: "Advance cannot be greater than Total Amount",
-                path: ["advance"],
+                path: ["amountPaying"],
             });
         }
     });

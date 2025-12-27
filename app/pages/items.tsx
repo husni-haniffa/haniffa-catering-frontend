@@ -1,11 +1,11 @@
+import { Button, ButtonText } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Ionicons } from "@expo/vector-icons";
 import { useRouter } from "expo-router";
-import { View, Text, Pressable, FlatList, ActivityIndicator } from "react-native";
-import { useItemStore } from "../store/itemStore";
-import { useCartStore } from "../store/cartStore";
 import { useEffect } from "react";
-import { Button, ButtonText } from "@/components/ui/button";
+import { ActivityIndicator, FlatList, Pressable, Text, View } from "react-native";
+import { useCartStore } from "../../store/cartStore";
+import { useItemStore } from "../../store/itemStore";
 
 export default function Items () {
 
@@ -26,7 +26,8 @@ export default function Items () {
         <View className="flex-1 justify-between">
           {itemsLoading ? ( 
               <View className="flex-1 justify-center items-center">
-                <ActivityIndicator size={"large"}/>
+                <Text className="mb-1">Please wait</Text>
+                <ActivityIndicator/>
               </View> 
             ) : items.length === 0 ? 
             ( <View className="flex-1 justify-center items-center">

@@ -1,9 +1,9 @@
-import { Tabs } from "expo-router";
 import { Ionicons } from "@expo/vector-icons";
+import { Tabs } from "expo-router";
 import { Pressable } from "react-native";
-import { useOrderStore } from "../store/orderStore";
-import { usePaymentStore } from "../store/paymentStore";
-import { useItemStore } from "../store/itemStore";
+import { useItemStore } from "../../store/itemStore";
+import { useOrderStore } from "../../store/orderStore";
+import { usePaymentStore } from "../../store/paymentStore";
 
 export default function TabsLayout () {
     const { getOrders, getOrderSummary } = useOrderStore()

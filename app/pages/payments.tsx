@@ -1,15 +1,17 @@
 import { Badge, BadgeText } from "@/components/ui/badge";
+import { Button, ButtonSpinner, ButtonText } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
-import { useEffect, useState } from "react";
-import { View, Text, Pressable, Modal, TextInput, FlatList, ActivityIndicator} from "react-native";
-import { usePaymentStore } from "../store/paymentStore";
-import { Button, ButtonText, ButtonSpinner } from "@/components/ui/button";
-import { useToastStore } from "../store/toastStore";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { Controller, useForm } from "react-hook-form";
-import { updatePaymentSchema, UpdatePaymentSchema } from "../types/Payment";
 import { Ionicons } from "@expo/vector-icons";
-import { useOrderStore } from "../store/orderStore";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useEffect, useState } from "react";
+import { Controller, useForm } from "react-hook-form";
+import { ActivityIndicator, FlatList, Modal, Pressable, Text, TextInput, View } from "react-native";
+
+import { useOrderStore } from "../../store/orderStore";
+import { usePaymentStore } from "../../store/paymentStore";
+import { useToastStore } from "../../store/toastStore";
+import { UpdatePaymentSchema, updatePaymentSchema } from "@/types/Payment";
+
 
 export default function Payments () {
 
@@ -51,7 +53,6 @@ export default function Payments () {
         }, [selectedPayment, reset]
     )
 
-
     const openPayment = (id: string) => {
         setSelectedPaymentId(id)
         setPaymentDetails(true)
@@ -59,14 +60,11 @@ export default function Payments () {
 
     const onSubmit = async(data: UpdatePaymentSchema) => {
         try {   
-            updatePayment(selectedPaymentId, Number(data.amountPaying))
-            getPayments()
+            await updatePayment(selectedPaymentId, Number(data.amountPaying))
             toast('success', 'Payment Updated')
             reset({ amountPaying: '',})
-            setPaymentDetails(false)
         } catch (error) {
-            console.log(error)
-            toast('success', 'Failed to update payment')
+            toast('error', 'Failed to update payment')
         }
     }
 
@@ -90,7 +88,8 @@ export default function Payments () {
             <View className="flex-1 mt-4">  
                 {paymentsLoading ? 
                     <View className="flex-1 justify-center items-center">
-                        <ActivityIndicator size={"large"}/>
+                        <Text className="mb-1">Please wait</Text>
+                        <ActivityIndicator/>
                     </View> : 
                 !paymentsLoading && filteredPayments.length === 0 ? (
                     <View className="flex-1 justify-center items-center">
@@ -103,7 +102,7 @@ export default function Payments () {
                     <Pressable onPress={() => openPayment(item.id)}>
                         <Card size="lg" className="flex-row justify-between items-center">
                             <Text className="font-semibold">{item.customerPhoneNumber}</Text>
-                            <Badge size="sm" variant="solid" action="warning">
+                            <Badge size="sm" variant="solid" action={item.paymentStatus === "PENDING" ? "error" : item.paymentStatus === "PARTIAL" ? "warning" : "success"}>
                                 <BadgeText>{item.paymentStatus}</BadgeText>
                             </Badge>
                         </Card>
@@ -153,7 +152,12 @@ export default function Payments () {
                                 </View>
                                 <View className="flex-col gap-3 mt-5">
                                     <Button onPress={handleSubmit(onSubmit) } action="positive" className="rounded-xl" size="lg">
-                                        {paymentUpdating ? <ButtonSpinner color="white" /> : 
+                                        {paymentUpdating ? <View className="flex-row items-center ml-2">
+            <ButtonText className="font-medium text-sm">
+                Please wait
+            </ButtonText>
+            <ButtonSpinner color="white" className="ml-2" />
+        </View> : 
                                         <ButtonText className="font-medium text-sm ml-2">
                                             Update Payment
                                         </ButtonText> }
